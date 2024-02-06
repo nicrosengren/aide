@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-aide = { path = "../../crates/aide", features = [
+aide = { path = "../../aide", features = [
     "redoc",
     "scalar",
     "axum",
@@ -15,7 +15,7 @@ aide = { path = "../../crates/aide", features = [
 async-trait = "0.1.57"
 axum = { version = "0.7.1", features = ["macros"] }
 axum-extra = "0.9.0"
-axum-jsonschema = { path = "../../crates/axum-jsonschema", features = [
+axum-jsonschema = { path = "../../axum-jsonschema", features = [
     "aide",
 ] }
 axum-macros = "0.4.0"

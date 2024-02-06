@@ -28,7 +28,6 @@ use axum::{
     response::IntoResponse,
 };
 use http::{Request, StatusCode};
-use itertools::Itertools;
 use jsonschema::{
     output::{BasicOutput, ErrorDescription, OutputUnit},
     JSONSchema,
@@ -193,6 +192,7 @@ impl From<JsonSchemaRejection> for JsonSchemaErrorResponse {
                                 Segment::Seq { index } => index.to_string(),
                                 _ => "?".to_string(),
                             }))
+                            .collect::<Vec<String>>()
                             .join("/"),
                         keyword_location: None,
                         error: s.into_inner().to_string(),

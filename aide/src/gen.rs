@@ -2,7 +2,6 @@
 
 use std::cell::RefCell;
 
-use cfg_if::cfg_if;
 use schemars::{
     gen::{SchemaGenerator, SchemaSettings},
     schema::SchemaObject,
@@ -124,13 +123,11 @@ pub struct GenContext {
 
 impl GenContext {
     fn new() -> Self {
-        cfg_if! {
-            if #[cfg(feature = "axum")] {
-                let no_content_status = 200;
-            } else {
-                let no_content_status = 204;
-            }
-        }
+        #[cfg(feature = "axum")]
+        let no_content_status = 200;
+
+        #[cfg(not(feature = "axum"))]
+        let no_content_status = 204;
 
         let mut this = Self {
             schema: SchemaGenerator::new(SchemaSettings::draft07()),

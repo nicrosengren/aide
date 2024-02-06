@@ -83,7 +83,6 @@
 //!
 //! - `bytes`
 //! - `http`
-//! - `serde_qs` (when used with `axum`)
 //!
 //! ### axum integration
 //!
@@ -140,7 +139,7 @@ pub mod redoc;
 #[cfg(feature = "scalar")]
 pub mod scalar;
 
-pub use helpers::{no_api::NoApi, with_api::ApiOverride, with_api::WithApi, use_api::UseApi};
+pub use helpers::{no_api::NoApi, use_api::UseApi, with_api::ApiOverride, with_api::WithApi};
 
 pub use error::Error;
 pub use operation::{OperationInput, OperationOutput};

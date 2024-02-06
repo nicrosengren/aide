@@ -5,6 +5,7 @@ authors = ["tamasfe"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Macros for the Aide library"
+publish = false
 
 [lib]
 proc-macro = true
