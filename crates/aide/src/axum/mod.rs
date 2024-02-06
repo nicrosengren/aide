@@ -172,7 +172,7 @@ use std::{convert::Infallible, future::Future, mem, pin::Pin};
 
 use crate::{
     gen::{self, in_context},
-    openapi::{Components, OpenApi, PathItem, ReferenceOr, SchemaObject},
+    openapi::{OpenApi, PathItem, ReferenceOr, SchemaObject},
     operation::OperationHandler,
     util::merge_paths,
     OperationInput, OperationOutput,
@@ -360,8 +360,9 @@ where
     }
 
     fn merge_api(&mut self, api: &mut OpenApi) {
-        self.merge_api_with(api, |x| x)
+        self.merge_api_with(api, |x| x);
     }
+
     fn merge_api_with<F>(&mut self, api: &mut OpenApi, transform: F)
     where
         F: FnOnce(TransformOpenApi) -> TransformOpenApi,
