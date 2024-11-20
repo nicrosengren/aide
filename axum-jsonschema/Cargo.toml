@@ -1,6 +1,6 @@
 [package]
 name = "axum-jsonschema"
-version = "0.9.0"
+version = "0.10.0"
 edition = "2021"
 authors = ["tamasfe"]
 keywords = ["web", "axum", "json"]
@@ -11,7 +11,7 @@ readme = "README.md"
 publish = false
 
 [dependencies]
-aide = { version = "0.14", path = "../aide", optional = true, features = [ "axum" ] }
+aide = { version = "0.15", path = "../aide", optional = true, features = [ "axum" ] }
 async-trait = "0.1.57"
 axum = { version = "0.7.1", default-features = false, features = ["json"] }
 http = "1.0.0"
