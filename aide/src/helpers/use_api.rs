@@ -3,25 +3,9 @@ use std::marker::PhantomData;
 
 use std::ops::{Deref, DerefMut};
 
-use crate::gen::GenContext;
+use crate::generator::GenContext;
 use crate::openapi::{Operation, Response};
 use crate::{OperationInput, OperationOutput};
-
-/// helper trait to allow simplified use of [`UseApi`] in responses
-pub trait IntoApi {
-    fn into_api<A>(self) -> UseApi<Self, A>
-    where
-        Self: Sized;
-}
-
-impl<T> IntoApi for T {
-    fn into_api<A>(self) -> UseApi<Self, A>
-    where
-        Self: Sized,
-    {
-        self.into()
-    }
-}
 
 /// Allows non [`OperationInput`] or [`OperationOutput`] types to be used in aide handlers with the api documentation of [A].
 /// For types that already implement [`OperationInput`] or [`OperationOutput`] it overrides the documentation with the provided one.

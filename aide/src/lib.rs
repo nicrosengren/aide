@@ -52,6 +52,7 @@
 //!
 //! - [axum](https://docs.rs/axum/latest/axum/): [`aide::axum`](axum).
 //! - [actix-web](https://docs.rs/actix-web/latest/actix_web/) is **not
+//!
 //! supported** since `0.5.0` only due to lack of developer capacity,
 //! but it's likely to be supported again in the future. If you use
 //! `actix-web` you can still use the macro-based `0.4.*` version of the library
@@ -64,7 +65,7 @@
 //!
 //! By default no action is taken on errors, in order to handle them
 //! it is possible to register an error handler in the thread-local context
-//! with [`aide::gen::on_error`](crate::gen::on_error).
+//! with [`aide::generator::on_error`](crate::gen::on_error).
 //!
 //! False positives are chosen over silently swallowing potential
 //! errors, these might happen when there is not enough contextual
@@ -122,7 +123,7 @@ mod macros;
 mod impls;
 
 pub mod error;
-pub mod gen;
+pub mod generator;
 pub mod operation;
 
 pub mod openapi;

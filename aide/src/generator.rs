@@ -3,7 +3,7 @@
 use std::cell::RefCell;
 
 use schemars::{
-    gen::{SchemaGenerator, SchemaSettings},
+    r#gen::{SchemaGenerator, SchemaSettings},
     schema::SchemaObject,
 };
 

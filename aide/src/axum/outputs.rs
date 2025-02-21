@@ -11,7 +11,10 @@ use schemars::{
     JsonSchema,
 };
 
-use crate::{gen::GenContext, operation::OperationOutput};
+use crate::{
+    generator::{self, GenContext},
+    operation::OperationOutput,
+};
 
 impl<T> OperationOutput for Json<T>
 where
@@ -40,7 +43,7 @@ where
     }
 
     fn inferred_responses(
-        ctx: &mut crate::gen::GenContext,
+        ctx: &mut generator::GenContext,
         operation: &mut Operation,
     ) -> Vec<(Option<u16>, Response)> {
         if let Some(res) = Self::operation_response(ctx, operation) {
@@ -88,7 +91,7 @@ where
     }
 
     fn inferred_responses(
-        ctx: &mut crate::gen::GenContext,
+        ctx: &mut generator::GenContext,
         operation: &mut Operation,
     ) -> Vec<(Option<u16>, Response)> {
         if let Some(res) = Self::operation_response(ctx, operation) {
@@ -137,7 +140,7 @@ impl<T> OperationOutput for Html<T> {
     }
 
     fn inferred_responses(
-        ctx: &mut crate::gen::GenContext,
+        ctx: &mut generator::GenContext,
         operation: &mut Operation,
     ) -> Vec<(Option<u16>, Response)> {
         if let Some(res) = Self::operation_response(ctx, operation) {
@@ -156,7 +159,7 @@ impl OperationOutput for JsonRejection {
     }
 
     fn inferred_responses(
-        ctx: &mut crate::gen::GenContext,
+        ctx: &mut generator::GenContext,
         operation: &mut Operation,
     ) -> Vec<(Option<u16>, Response)> {
         if let Some(res) = Self::operation_response(ctx, operation) {
@@ -180,7 +183,7 @@ impl OperationOutput for FormRejection {
     }
 
     fn inferred_responses(
-        ctx: &mut crate::gen::GenContext,
+        ctx: &mut generator::GenContext,
         operation: &mut Operation,
     ) -> Vec<(Option<u16>, Response)> {
         if let Some(res) = Self::operation_response(ctx, operation) {
@@ -189,30 +192,6 @@ impl OperationOutput for FormRejection {
                 rejection_response(StatusCode::PAYLOAD_TOO_LARGE, &res),
                 rejection_response(StatusCode::UNSUPPORTED_MEDIA_TYPE, &res),
                 // rejection_response(StatusCode::UNPROCESSABLE_ENTITY, &res),
-            ])
-        } else {
-            Vec::new()
-        }
-    }
-}
-
-#[cfg(feature = "jwt_authorizer")]
-impl OperationOutput for jwt_authorizer::AuthError {
-    type Inner = jwt_authorizer::AuthError;
-
-    fn operation_response(ctx: &mut GenContext, operation: &mut Operation) -> Option<Response> {
-        String::operation_response(ctx, operation)
-    }
-
-    fn inferred_responses(
-        ctx: &mut crate::gen::GenContext,
-        operation: &mut Operation,
-    ) -> Vec<(Option<u16>, Response)> {
-        if let Some(res) = Self::operation_response(ctx, operation) {
-            Vec::from([
-                rejection_response(StatusCode::UNAUTHORIZED, &res),
-                rejection_response(StatusCode::INTERNAL_SERVER_ERROR, &res),
-                rejection_response(StatusCode::FORBIDDEN, &res),
             ])
         } else {
             Vec::new()
@@ -242,10 +221,13 @@ mod extra {
     use super::*;
     use crate::operation::OperationOutput;
 
-
     #[cfg(feature = "axum-extra-cookie")]
-    impl OperationOutput for extract::CookieJar { type Inner = (); }
+    impl OperationOutput for extract::CookieJar {
+        type Inner = ();
+    }
 
     #[cfg(feature = "axum-extra-cookie-private")]
-    impl OperationOutput for extract::PrivateCookieJar { type Inner = (); }
+    impl OperationOutput for extract::PrivateCookieJar {
+        type Inner = ();
+    }
 }

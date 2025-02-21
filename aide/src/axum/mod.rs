@@ -171,7 +171,7 @@
 use std::{convert::Infallible, future::Future, mem, pin::Pin};
 
 use crate::{
-    gen::{self, in_context},
+    generator::{self, in_context},
     openapi::{OpenApi, PathItem, ReferenceOr, SchemaObject},
     operation::OperationHandler,
     util::merge_paths,
@@ -412,7 +412,7 @@ where
             });
 
         if needs_reset {
-            gen::reset_context();
+            generator::reset_context();
         }
     }
 }

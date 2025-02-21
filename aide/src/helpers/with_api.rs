@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 
-use crate::gen::GenContext;
+use crate::generator::GenContext;
 use crate::openapi::{Operation, Response};
 use crate::{OperationInput, OperationOutput};
 

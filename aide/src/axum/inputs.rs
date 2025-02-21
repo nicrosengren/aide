@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use crate::{
+    generator,
     openapi::{
         self, Header, MediaType, Operation, Parameter, ParameterData, ReferenceOr, RequestBody,
         Response, SchemaObject, StatusCode,
@@ -39,7 +40,7 @@ impl<T> OperationInput for axum_extra::typed_header::TypedHeader<T>
 where
     T: axum_extra::headers::Header,
 {
-    fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+    fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
         let s = ctx.schema.subschema_for::<String>();
         add_parameters(
             ctx,
@@ -72,7 +73,7 @@ impl<T> OperationInput for Json<T>
 where
     T: JsonSchema,
 {
-    fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+    fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
         let schema = ctx.schema.subschema_for::<T>().into_object();
         let resolved_schema = ctx.resolve_schema(&schema);
 
@@ -106,7 +107,7 @@ impl<T> OperationInput for Form<T>
 where
     T: JsonSchema,
 {
-    fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+    fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
         let schema = ctx.schema.subschema_for::<T>().into_object();
         let resolved_schema = ctx.resolve_schema(&schema);
 
@@ -140,7 +141,7 @@ impl<T> OperationInput for Path<T>
 where
     T: JsonSchema,
 {
-    fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+    fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
         let schema = ctx.schema.subschema_for::<T>().into_object();
         let params = parameters_from_schema(ctx, schema, ParamLocation::Path);
         add_parameters(ctx, operation, params);
@@ -151,7 +152,7 @@ impl<T> OperationInput for Query<T>
 where
     T: JsonSchema,
 {
-    fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+    fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
         let schema = ctx.schema.subschema_for::<T>().into_object();
         let params = parameters_from_schema(ctx, schema, ParamLocation::Query);
         add_parameters(ctx, operation, params);
@@ -160,10 +161,7 @@ where
 
 #[cfg(feature = "axum-ws")]
 impl OperationInput for axum::extract::ws::WebSocketUpgrade {
-    fn operation_input(
-        ctx: &mut crate::gen::GenContext,
-        operation: &mut crate::openapi::Operation,
-    ) {
+    fn operation_input(ctx: &mut generator::GenContext, operation: &mut crate::openapi::Operation) {
         if operation.responses.is_none() {
             operation.responses = Some(Default::default());
         }
@@ -288,7 +286,7 @@ impl OperationInput for axum::extract::ws::WebSocketUpgrade {
 
 #[cfg(feature = "axum-multipart")]
 impl OperationInput for axum::extract::Multipart {
-    fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+    fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
         set_body(
             ctx,
             operation,
@@ -330,7 +328,7 @@ mod extra {
         T: OperationInput,
     {
         fn operation_input(
-            ctx: &mut crate::gen::GenContext,
+            ctx: &mut generator::GenContext,
             operation: &mut crate::openapi::Operation,
         ) {
             T::operation_input(ctx, operation);
@@ -342,7 +340,7 @@ mod extra {
         T: OperationInput,
     {
         fn operation_input(
-            ctx: &mut crate::gen::GenContext,
+            ctx: &mut generator::GenContext,
             operation: &mut crate::openapi::Operation,
         ) {
             T::operation_input(ctx, operation);
@@ -360,7 +358,7 @@ mod extra {
     where
         T: JsonSchema,
     {
-        fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+        fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
             let schema = ctx.schema.subschema_for::<T>().into_object();
             let resolved_schema = ctx.resolve_schema(&schema);
 
@@ -394,50 +392,10 @@ mod extra {
     where
         T: JsonSchema,
     {
-        fn operation_input(ctx: &mut crate::gen::GenContext, operation: &mut Operation) {
+        fn operation_input(ctx: &mut generator::GenContext, operation: &mut Operation) {
             let schema = ctx.schema.subschema_for::<T>().into_object();
             let params = parameters_from_schema(ctx, schema, ParamLocation::Query);
             add_parameters(ctx, operation, params);
-        }
-    }
-}
-
-#[cfg(feature = "jwt-authorizer")]
-mod jwt_authorizer {
-    use super::*;
-    use crate::OperationInput;
-    use ::jwt_authorizer::JwtClaims;
-
-    impl<T> OperationInput for JwtClaims<T> {
-        fn operation_input(
-            ctx: &mut crate::gen::GenContext,
-            operation: &mut crate::openapi::Operation,
-        ) {
-            let s = ctx.schema.subschema_for::<String>();
-            add_parameters(
-                ctx,
-                operation,
-                [Parameter::Header {
-                    parameter_data: ParameterData {
-                        name: "Authorization".to_string(),
-                        description: Some("Jwt Bearer token".to_string()),
-                        required: true,
-                        format: crate::openapi::ParameterSchemaOrContent::Schema(
-                            openapi::SchemaObject {
-                                json_schema: s,
-                                example: None,
-                                external_docs: None,
-                            },
-                        ),
-                        extensions: Default::default(),
-                        deprecated: None,
-                        example: None,
-                        examples: IndexMap::default(),
-                        explode: None,
-                    },
-                    style: openapi::HeaderStyle::Simple,
-                }],
-            );
         }
     }
 }

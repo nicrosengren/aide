@@ -233,7 +233,7 @@ mod impl_aide {
         T: JsonSchema,
     {
         fn operation_input(
-            ctx: &mut aide::gen::GenContext,
+            ctx: &mut aide::generator::GenContext,
             operation: &mut aide::openapi::Operation,
         ) {
             axum::Json::<T>::operation_input(ctx, operation);
@@ -247,14 +247,14 @@ mod impl_aide {
         type Inner = <axum::Json<T> as aide::OperationOutput>::Inner;
 
         fn operation_response(
-            ctx: &mut aide::gen::GenContext,
+            ctx: &mut aide::generator::GenContext,
             op: &mut aide::openapi::Operation,
         ) -> Option<aide::openapi::Response> {
             axum::Json::<T>::operation_response(ctx, op)
         }
 
         fn inferred_responses(
-            ctx: &mut aide::gen::GenContext,
+            ctx: &mut aide::generator::GenContext,
             operation: &mut aide::openapi::Operation,
         ) -> Vec<(Option<u16>, aide::openapi::Response)> {
             axum::Json::<T>::inferred_responses(ctx, operation)
